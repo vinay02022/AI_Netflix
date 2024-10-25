@@ -24,7 +24,7 @@ const Login = () => {
     const error = validateData(email.current.value, password.current.value)
     setErrorMessage(error)
     if (error) return;
-    //SignUp-Logic
+    //SignUp-Logic 
     if (!isSignIn) {
 
       createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
