@@ -3,11 +3,13 @@ import Header from "./Header";
 import validateData from "../utils/validate";
 import {createUserWithEmailAndPassword , signInWithEmailAndPassword,updateProfile} from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 
 
 const Login = () => {
-  const [isSignIn, setSignIn] = useState(true);
+  const navigate=useNavigate();
+  const [isSignIn, setSignIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   // const[names,setName]=useState(null);
 
@@ -17,10 +19,12 @@ const Login = () => {
   const name=useRef("");
 
   const toggleSignup = () => {
+   
     setSignIn(!isSignIn)
   }
 
   const handleSignIn = () => {
+    
     const error = validateData(email.current.value, password.current.value)
     setErrorMessage(error)
     if (error) return;
@@ -37,8 +41,10 @@ const Login = () => {
           await updateProfile(user, {
             displayName: userName
           });
+          setSignIn(true)
 
-          // ...
+
+           
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -56,6 +62,8 @@ const Login = () => {
           // Signed in 
           const user = userCredential.user;
           console.log("user", user);
+          // setSignIn(true)//abhi k liye 
+          navigate("/header");
           // ...
         })
         .catch((error) => {
@@ -68,9 +76,9 @@ const Login = () => {
 
   }
   return (
-    <div>
+    <div className="overflow-x-hidden">
       {/* <h2>Hello Wo</h2> */}
-      <Header />
+      <Header isSignIn={isSignIn} onSignOut={() => setUser(null)}/>
       <div className="absolute">
         <img src='https://assets.nflxext.com/ffe/siteui/vlv3/7c0e18aa-2c95-474d-802e-7f30e75dcca4/web/IN-en-20241014-TRIFECTA-perspective_e7121311-c11e-4809-a3e6-22abffa33569_large.jpg' alt="Background"  />
       </div>
