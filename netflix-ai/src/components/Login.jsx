@@ -24,6 +24,7 @@ const Login = () => {
   }
 
   const handleSignIn = () => {
+    console.log("Entery_handleSignIn");
     
     const error = validateData(email.current.value, password.current.value)
     setErrorMessage(error)
@@ -31,7 +32,7 @@ const Login = () => {
     //SignUp-Logic 
     if (!isSignIn) {
 
-      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+      createUserWithEmailAndPassword(auth,email.current.value, password.current.value)
         .then(async(userCredential) => {
           // Signed up 
           const user = userCredential.user;
@@ -63,7 +64,7 @@ const Login = () => {
           const user = userCredential.user;
           console.log("user", user);
           // setSignIn(true)//abhi k liye 
-          navigate("/header");
+          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -78,7 +79,8 @@ const Login = () => {
   return (
     <div className="overflow-x-hidden">
       {/* <h2>Hello Wo</h2> */}
-      <Header isSignIn={isSignIn} onSignOut={() => setUser(null)}/>
+      <Header isSignIn={isSignIn}/> 
+      {/* /onSignOut={() => setUser(null) */}
       <div className="absolute">
         <img src='https://assets.nflxext.com/ffe/siteui/vlv3/7c0e18aa-2c95-474d-802e-7f30e75dcca4/web/IN-en-20241014-TRIFECTA-perspective_e7121311-c11e-4809-a3e6-22abffa33569_large.jpg' alt="Background"  />
       </div>
