@@ -1,41 +1,50 @@
 import React from 'react';
+import { auth } from '../utils/firebase';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-const Header = (props) => {
-  const { isSignIn } = props;
-  console.log("isSignIn", isSignIn);
+const Header = () => {
+  const user = useSelector(store => store.user); // Get user data from Redux store
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Implement your logout logic here, e.g., clearing user data or redirecting
-    console.log("User logged out");
+    signOut(auth).then(() => {
+      console.warn("Success Signout");
+      navigate('/');
+    }).catch((error) => {
+      console.warn("Error signing out:", error);
+    });
   };
 
   return (
-    <div className='flex justify-between'>
-      {/* {!isSignIn ? ( */}
-        <div className='bg-gradient-to-b w-screen  from-black'>
-          <img 
-            src='https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png' 
-            className='w-44' 
-            alt="Netflix Logo" 
+    <div className='flex justify-end'>
+      <div className='bg-gradient-to-b w-screen absolute from-black z-10 p-12'>
+        <img
+          src='https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png'
+          className='w-44'
+          alt="Netflix Logo"
+        />
+      </div>
+      {user && user.displayName && ( // Check if user data exists
+        <div className='bg-gradient-to-b from-black absolute z-10 p-10 px-12'>
+          <img
+            src={user.photoURL}
+            className='w-14 h-10 rounded-lg'
+            alt="User Logo"
           />
-        </div>
-      {/* ) : ( */}
-        <div className='bg-gradient-to-b  from-black'>
-          <img 
-            src='https://wallpapers.com/images/hd/netflix-profile-pictures-1000-x-1000-qo9h82134t9nv0j0.jpg' 
-            className='w-10 h-8' 
-            alt="User Logo" 
-          />
-          <button 
-            onClick={handleLogout} 
-            className='text-white w-full text-center justify-center h-1/2 bg-red-600 rounded'
+          {user.displayName}
+          <button
+            onClick={handleLogout}
+            className='text-white w-full text-center justify-center h-1/2 rounded-full hover:scale-x-110 bg-red-600 rounded'
           >
             Sign out
           </button>
         </div>
-      {/* )} */}
-    </div >
+      )}
+    </div>
   );
-}
+};
 
 export default Header;
