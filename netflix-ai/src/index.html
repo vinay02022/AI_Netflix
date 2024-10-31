@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Catcher Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #gameArea {
+            position: relative;
+            width: 400px;
+            height: 600px;
+            border: 2px solid #333;
+            overflow: hidden;
+            margin: 20px auto;
+            background-color: white;
+        }
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #score, #timer {
+            font-size: 24px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Color Catcher Game!</h1>
+    <div id="score">Score: 0</div>
+    <div id="timer">Time: 30</div>
+    <div id="gameArea"></div>
+    <button onclick="startGame()">Start Game</button>
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            document.getElementById("score").innerText = "Score: " + score;
+            document.getElementById("timer").innerText = "Time: " + timeLeft;
+
+            gameInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    createBall();
+                    timeLeft--;
+                    document.getElementById("timer").innerText = "Time: " + timeLeft;
+                } else {
+                    clearInterval(gameInterval);
+                    alert("Time's up! Your score is: " + score);
+                }
+            }, 1000);
+        }
+
+        function createBall() {
+            const colors = ["red", "blue", "green", "yellow", "purple", "orange"];
+            const ball = document.createElement("div");
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            ball.className = "ball";
+            ball.style.backgroundColor = color;
+            ball.style.width = "40px";
+            ball.style.height = "40px";
+            ball.style.left = Math.random() * 360 + "px"; // Random horizontal position
+            ball.style.top = "0px"; // Start at the top of the game area
+            ball.onclick = function () {
+                score++;
+                document.getElementById("score").innerText = "Score: " + score;
+                ball.remove();
+            };
+            document.getElementById("gameArea").appendChild(ball);
+            dropBall(ball);
+        }
+
+        function dropBall(ball) {
+            let position = 0;
+            const dropInterval = setInterval(() => {
+                if (position < 560) {
+                    position += 4; // Speed of falling
+                    ball.style.top = position + "px";
+                } else {
+                    clearInterval(dropInterval);
+                    ball.remove(); // Remove ball if it falls out of the game area
+                }
+            }, 20);
+        }
+    </script>
+</body>
+</html>

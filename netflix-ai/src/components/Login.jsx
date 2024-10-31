@@ -115,7 +115,7 @@ const Login = () => {
         <img src='https://assets.nflxext.com/ffe/siteui/vlv3/7c0e18aa-2c95-474d-802e-7f30e75dcca4/web/IN-en-20241014-TRIFECTA-perspective_e7121311-c11e-4809-a3e6-22abffa33569_large.jpg' alt="Background" />
       </div>
       <form className="absolute mx-auto left-0 right-0 bg-black w-[30%] h-[95%] bg-opacity-80 p-12 my-36 rounded-lg" onSubmit={(e) => {
-        console.log("Hello");
+        // console.log("Hello");
         e.preventDefault();
         handleSignIn();
 
