@@ -3,14 +3,18 @@ import Header from "./Header";
 import validateData from "../utils/validate";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../slice/userSlice";
+import { USER_AVATAR } from "../utils/constants";
+// import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isSignIn, setSignIn] = useState(false);
+  const[checkIsSignin,setcheckIsSignin]=useState(false)
   const [errorMessage, setErrorMessage] = useState(null);
   const dispatch = useDispatch();
   // const[names,setName]=useState(null);
@@ -26,90 +30,84 @@ const Login = () => {
   }
 
   const handleSignIn = () => {
-    // console.log("Entery_handleSignIn");
-
-    const error = validateData(email.current.value, password.current.value)
-    setErrorMessage(error)
+    const error = validateData(email.current.value, password.current.value);
+    setErrorMessage(error);
     if (error) return;
-    //SignUp-Logic 
+
     if (!isSignIn) {
+        // Sign-Up Logic
+        createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+            .then(async(userCredential) => {
+                const user = userCredential.user;
+                const userName = name.current.value;
 
-      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-        .then(async (userCredential) => {
-          // Signed up 
-          const user = userCredential.user;
-          console.log("userUperInsideCreateUserLoign.jsx", user);
-          // {console.log("HAHHAA",user)}
-          const userName = name.current.value; // This gets the latest name input
-          // const{uid,displayName,email,photoURL}=auth.currentUser;
-          console.log("auth.currentUser",auth.currentUser);
-          
-          await updateProfile(user, {
-            displayName: userName,
-            photoURL: "https://avatars.githubusercontent.com/u/51539107?v=4&size=64",
-          })
-            .then(() => {
-              // dispatch(
-              //   addUser({
-              //     uid: user.uid, 
-              //     email: user.email,
-              //     displayName: userName,
-              //     photoURL: "https://avatars.githubusercontent.com/u/51539107?v=4&size=64",
-              //   })
+                 await updateProfile(user, {
+                    displayName: userName,
+                    photoURL: USER_AVATAR,
+              })
+              .then(()=>{
+                const {uid,email,displayName,photoURL}=auth.currentUser;
+                dispatch(addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+              }));
 
+              })
 
-              // );
-              console.log("User Name:", userName)
+                // Clear the input fields
+                email.current.value = "";
+                password.current.value = "";
+                name.current.value = "";
+
+                // Show toast notification
+                toast('🦄 Wow so easy!', {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                });
+
+                // Stay on the current page after signup
+                // No navigation for signup
             })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setErrorMessage(`${errorCode}: ${errorMessage}`);
+            });
+    } else {
+        // Sign-In Logic
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+            .then((userCredential) => {
+                const user = userCredential.user;
 
+                dispatch(addUser({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                }));
 
-          setSignIn(true)
-          email.current.value = "";
-          password.current.value = "";
-
-
-
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + ":" + errorMessage)
-          // ..
-        });
-
-
+                // Redirect to '/browse' after signing in
+                navigate("/browse");
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setErrorMessage(`${errorCode}: ${errorMessage}`);
+            });
     }
-    else {
-      //signIn-Logic
-      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          console.log("user", user);
-          // setSignIn(true)//abhi k liye 
+}
 
-          dispatch(addUser({
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: "https://avatars.githubusercontent.com/u/51539107?v=4&size=64",
-          }));
-          navigate("/browse");
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + ":" + errorMessage)
-        });
-    }
-
-
-  }
   return (
     <div className="overflow-x-hidden">
       {/* <h2>Hello Wo</h2> */}
-      <Header isSignIn={isSignIn} />
+      <Header checkIsSignin={checkIsSignin} />
       {/* /onSignOut={() => setUser(null) */}
       <div className="absolute">
         <img src='https://assets.nflxext.com/ffe/siteui/vlv3/7c0e18aa-2c95-474d-802e-7f30e75dcca4/web/IN-en-20241014-TRIFECTA-perspective_e7121311-c11e-4809-a3e6-22abffa33569_large.jpg' alt="Background" />
