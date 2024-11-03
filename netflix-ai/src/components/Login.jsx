@@ -8,8 +8,6 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../slice/userSlice";
 import { USER_AVATAR } from "../utils/constants";
 // import { useNavigate } from "react-router-dom";
-
-
 const Login = () => {
   // const navigate = useNavigate();
   // const navigate = useNavigate();
@@ -116,10 +114,7 @@ const Login = () => {
         // console.log("Hello");
         e.preventDefault();
         handleSignIn();
-
-
       }}>
-
         <h2 className="text-cyan-50  m-2 font-bold text-4xl mb-10">{!isSignIn ? "Sign Up" : "Sign In"}</h2>
         {!isSignIn && <input type="text" ref={name} id="name" placeholder="Full Name" className="p-2 m-2 w-full h-14 rounded-sm text-white bg-transparent border" />}
 
