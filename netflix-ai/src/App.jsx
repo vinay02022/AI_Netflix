@@ -6,6 +6,5 @@ export default function App() {
     <Provider store={appStore} >
     <Body />
     </Provider>
-
   )
 }
