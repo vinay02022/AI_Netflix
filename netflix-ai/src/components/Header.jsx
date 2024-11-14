@@ -10,7 +10,7 @@ import { LOGO } from '../utils/constants';
 
 
 const Header = ({checkIsSignin}) => {
-  console.log("singS1@gmail.com",checkIsSignin);
+  // console.log("singS1@gmail.com",checkIsSignin);
   
   const user = useSelector(store => store.user); // Get user data from Redux store
   const navigate = useNavigate();
